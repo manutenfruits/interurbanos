@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="regularbusbg">#338E22</color>
+    <color name="regularbusfg">#FFFFFF</color>
+    <color name="nightbusbg">#1A171B</color>
+    <color name="nightbusfg">#97BE0D</color>
+</resources>
