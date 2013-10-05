@@ -21,9 +21,9 @@ public class BusLinesAdapter extends BaseAdapter{
     private static LayoutInflater inflater = null;
 
     public BusLinesAdapter(Activity a, ArrayList<HashMap<String,String>> d){
-        activity = a;
-        data = d;
-        inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.activity = a;
+        this.data = d;
+        this.inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -40,12 +40,12 @@ public class BusLinesAdapter extends BaseAdapter{
         TextView busOrigin = (TextView) vi.findViewById(R.id.bus_origin);
         TextView busDestination = (TextView) vi.findViewById(R.id.bus_destination);
 
-        busNumber.setText(busLine.get(MainActivity.KEY_LINE));
-        busOrigin.setText(busLine.get(MainActivity.KEY_ORIGIN));
-        busDestination.setText(busLine.get(MainActivity.KEY_DESTINATION));
+        busNumber.setText(busLine.get(BusModel.KEY_LINE));
+        busOrigin.setText(busLine.get(BusModel.KEY_ORIGIN));
+        busDestination.setText(busLine.get(BusModel.KEY_DESTINATION));
 
-        String busType = busLine.get(MainActivity.KEY_BUSTYPE);
-        if(busType.equals(MainActivity.NIGHTBUS)){
+        String busType = busLine.get(BusModel.KEY_BUSTYPE);
+        if(busType.equals(BusModel.NIGHTBUS)){
             busNumber.setTextColor(activity.getResources().getColor(R.color.nightbusfg));
             busNumber.setBackgroundColor(activity.getResources().getColor(R.color.nightbusbg));
         }else{
@@ -58,7 +58,7 @@ public class BusLinesAdapter extends BaseAdapter{
 
     @Override
     public int getCount() {
-        return data.size();
+        return this.data.size();
     }
 
     @Override
@@ -68,6 +68,6 @@ public class BusLinesAdapter extends BaseAdapter{
 
     @Override
     public Object getItem(int position) {
-        return data.get(position);
+        return this.data.get(position);
     }
 }

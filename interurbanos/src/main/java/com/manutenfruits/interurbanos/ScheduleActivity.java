@@ -36,10 +36,12 @@ public class ScheduleActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.schedule);
 
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
         this.img = (ImageView) findViewById(R.id.scheduleView);
         this.loading = (LinearLayout) findViewById(R.id.loadingSchedule);
 
-        String scheduleURI = getIntent().getStringExtra(com.manutenfruits.interurbanos.MainActivity.KEY_LINE);
+        String scheduleURI = getIntent().getStringExtra(BusModel.KEY_LINE);
 
         new ImageDownloader().execute(scheduleURI);
 
