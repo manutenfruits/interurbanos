@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -44,20 +46,10 @@ public class MainActivity extends Activity {
 
         BusLinesAdapter adapter = new BusLinesAdapter(this, busLines);
 
-        ListView listView = (ListView) findViewById(R.id.buslist);
+        final ListView listView = (ListView) findViewById(R.id.buslist);
 
         listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HashMap<String, String> item = (HashMap<String, String>)parent.getItemAtPosition(position);
-
-                Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
-                intent.putExtra(BusModel.KEY_LINE, item.get(BusModel.KEY_GOING));
-                startActivity(intent);
-            }
-        });
     }
 
     @Override

@@ -8,5 +8,7 @@
     <string name="title_activity_search_bus">SearchBusActivity</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="going">Ida</string>
+    <string name="coming">Vuelta</string>
 
 </resources>

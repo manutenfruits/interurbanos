@@ -4,4 +4,6 @@
     <color name="regularbusfg">#FFFFFF</color>
     <color name="nightbusbg">#1A171B</color>
     <color name="nightbusfg">#97BE0D</color>
+    <color name="lightgreybg">#BEBEBE</color>
+    <color name="darkgreyfg">#333333</color>
 </resources>

@@ -69,13 +69,13 @@ public class ScheduleActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            img.setVisibility(View.INVISIBLE);
+            img.setVisibility(View.GONE);
             loading.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Bitmap result) {
-            loading.setVisibility(View.INVISIBLE);
+            loading.setVisibility(View.GONE);
 
             Drawable drawable = new BitmapDrawable(getResources(), result);
             img.setVisibility(View.VISIBLE);
