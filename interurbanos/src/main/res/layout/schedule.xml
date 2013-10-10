@@ -19,12 +19,18 @@
 
     </LinearLayout>
 
+    <ScrollView
+        android:id="@+id/scrollSchedule"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/scheduleView"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" />
+        <com.manutenfruits.interurbanos.ScheduleView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/scheduleView"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true" />
+
+    </ScrollView>
 
 </RelativeLayout>

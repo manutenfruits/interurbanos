@@ -28,8 +28,9 @@ import java.io.InputStream;
 
 public class ScheduleActivity extends Activity {
 
-    private ImageView img;
-    private LinearLayout loading;
+    private View scroll;
+    private ScheduleView schedule;
+    private View loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +39,9 @@ public class ScheduleActivity extends Activity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        this.img = (ImageView) findViewById(R.id.scheduleView);
-        this.loading = (LinearLayout) findViewById(R.id.loadingSchedule);
+        this.scroll = findViewById(R.id.scrollSchedule);
+        this.loading = findViewById(R.id.loadingSchedule);
+        this.schedule = (ScheduleView) findViewById(R.id.scheduleView);
 
         String scheduleURI = getIntent().getStringExtra(BusModel.KEY_LINE);
 
@@ -69,7 +71,7 @@ public class ScheduleActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            img.setVisibility(View.GONE);
+            scroll.setVisibility(View.GONE);
             loading.setVisibility(View.VISIBLE);
         }
 
@@ -78,8 +80,8 @@ public class ScheduleActivity extends Activity {
             loading.setVisibility(View.GONE);
 
             Drawable drawable = new BitmapDrawable(getResources(), result);
-            img.setVisibility(View.VISIBLE);
-            img.setImageDrawable(drawable);
+            scroll.setVisibility(View.VISIBLE);
+            schedule.setImageDrawable(drawable);
 
         }
 
