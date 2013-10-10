@@ -158,8 +158,7 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
                 select(parent);
 
                 if(selected >= 0){
-                    // TODO: find view to hide
-                    // unselect(parent);
+                    notifyDataSetChanged();
                 }
                 selected = this.position;
             }else{
