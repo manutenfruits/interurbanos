@@ -1,23 +1,32 @@
-package com.manutenfruits.interurbanos;
+package com.manutenfruits.interurbanos.model;
+
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
+
+import com.jakewharton.disklrucache.DiskLruCache;
+import com.manutenfruits.interurbanos.BusApplication;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 
 /**
  * Created by manutenfruits on 3/10/13.
  */
 public class BusModel {
 
-    private final static  String BUSLINES_FILE = "buslines.json";
+    public final static String BUSLINES_CACHE = "buscache";
+    public static final int DISK_CACHE_SIZE = 1024 * 1024 * 1; // 10MB
+    public static final String DISK_CACHE_SUBDIR = "cached";
+    private final static String BUSLINES_FILE = "buslines.json";
 
     private static final String KEY_GOING = "forward";
     private static final String KEY_COMING = "backward";
@@ -26,6 +35,10 @@ public class BusModel {
     private static final String KEY_DESTINATION = "destination";
 
     private static ArrayList<BusLine> busLines = null;
+
+    private static DiskLruCache dlc;
+    private final Object dlcLock = new Object();
+    private boolean dlcStarting = true;
 
     public static ArrayList<BusLine> getData(){
         if(busLines == null){
@@ -92,8 +105,11 @@ public class BusModel {
         Collections.sort(busLines, new Comparator<BusLine>() {
             @Override
             public int compare(BusLine lhs, BusLine rhs) {
-                return (lhs.getLine().compareTo(rhs.getLine()));
+            return (lhs.getLine().compareTo(rhs.getLine()));
             }
         });
     }
+
+
+
 }

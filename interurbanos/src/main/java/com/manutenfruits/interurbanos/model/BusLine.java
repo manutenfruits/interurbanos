@@ -1,11 +1,10 @@
-package com.manutenfruits.interurbanos;
+package com.manutenfruits.interurbanos.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 /**    static final String KEY_COMING = "backward";
 

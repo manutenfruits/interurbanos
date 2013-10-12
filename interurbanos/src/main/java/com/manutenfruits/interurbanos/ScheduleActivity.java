@@ -1,7 +1,6 @@
 package com.manutenfruits.interurbanos;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,15 +8,16 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ScrollView;
+
+import com.manutenfruits.interurbanos.model.BusLine;
+import com.manutenfruits.interurbanos.model.BusModel;
+import com.manutenfruits.interurbanos.model.DiskLruImageCache;
+import com.manutenfruits.interurbanos.view.ScheduleView;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -33,6 +33,7 @@ public class ScheduleActivity extends Activity {
     private ScrollView scroll;
     private ScheduleView schedule;
     private View loading;
+    private DiskLruImageCache dlic;
 
     private BusLine busLine;
 
@@ -52,15 +53,9 @@ public class ScheduleActivity extends Activity {
         this.busLine = getIntent().getParcelableExtra(BusLine.KEY);
         this.going = getIntent().getBooleanExtra(BusLine.DIRECTION, true);
 
-        URI scheduleURI;
+        this.dlic = new DiskLruImageCache(this, BusModel.BUSLINES_CACHE, BusModel.DISK_CACHE_SIZE, Bitmap.CompressFormat.PNG, 100);
 
-        if(this.going){
-            scheduleURI = this.busLine.getGoing();
-        }else{
-            scheduleURI = this.busLine.getComing();
-        }
-
-        new ImageDownloader().execute(scheduleURI);
+        new ImageDownloader().execute(busLine);
 
     }
 
@@ -81,12 +76,12 @@ public class ScheduleActivity extends Activity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if(going){
-                    new ImageDownloader().execute(busLine.getComing());
-                    item.setTitle(R.string.flip_to_going);
-                }else{
-                    new ImageDownloader().execute(busLine.getGoing());
                     item.setTitle(R.string.flip_to_coming);
+                }else{
+                    item.setTitle(R.string.flip_to_going);
                 }
+                going = !going;
+                new ImageDownloader().execute(busLine);
                 return true;
             }
         });
@@ -99,12 +94,24 @@ public class ScheduleActivity extends Activity {
         super.onConfigurationChanged(newConfig);
     }
 
-    private class ImageDownloader extends AsyncTask<URI, Void, Bitmap> {
+    private class ImageDownloader extends AsyncTask<BusLine, Void, Bitmap> {
+
+        private String key;
 
         @Override
-        protected Bitmap doInBackground(URI... params) {
-            // TODO Auto-generated method stub
-            return downloadBitmap(params[0]);
+        protected Bitmap doInBackground(BusLine... params) {
+            Bitmap schedule;
+            this.key = busLine.getLine().toLowerCase() + "-" + (going?"1":"2");
+
+            if(dlic.containsKey(key)){
+                schedule = dlic.getBitmap(key);
+            }else{
+                URI uri = going? busLine.getGoing(): busLine.getComing();
+                schedule = downloadBitmap(uri);
+                dlic.put(key, schedule);
+            }
+
+            return schedule;
         }
 
         @Override

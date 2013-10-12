@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
 
-        <com.manutenfruits.interurbanos.ScheduleView
+        <com.manutenfruits.interurbanos.view.ScheduleView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/scheduleView"

@@ -1,4 +1,4 @@
-package com.manutenfruits.interurbanos;
+package com.manutenfruits.interurbanos.view;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
