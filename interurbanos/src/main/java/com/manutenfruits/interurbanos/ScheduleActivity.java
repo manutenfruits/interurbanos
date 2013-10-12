@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,12 +26,17 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.InputStream;
+import java.net.URI;
 
 public class ScheduleActivity extends Activity {
 
-    private View scroll;
+    private ScrollView scroll;
     private ScheduleView schedule;
     private View loading;
+
+    private BusLine busLine;
+
+    private boolean going;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +45,20 @@ public class ScheduleActivity extends Activity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        this.scroll = findViewById(R.id.scrollSchedule);
+        this.scroll = (ScrollView) findViewById(R.id.scrollSchedule);
         this.loading = findViewById(R.id.loadingSchedule);
         this.schedule = (ScheduleView) findViewById(R.id.scheduleView);
 
-        String scheduleURI = getIntent().getStringExtra(BusModel.KEY_LINE);
+        this.busLine = getIntent().getParcelableExtra(BusLine.KEY);
+        this.going = getIntent().getBooleanExtra(BusLine.DIRECTION, true);
+
+        URI scheduleURI;
+
+        if(this.going){
+            scheduleURI = this.busLine.getGoing();
+        }else{
+            scheduleURI = this.busLine.getComing();
+        }
 
         new ImageDownloader().execute(scheduleURI);
 
@@ -53,6 +68,29 @@ public class ScheduleActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.schedule, menu);
+
+        MenuItem flipDirection = menu.findItem(R.id.flip_direction);
+
+        if(this.going){
+            flipDirection.setTitle(R.string.flip_to_coming);
+        }else{
+            flipDirection.setTitle(R.string.flip_to_going);
+        }
+
+        flipDirection.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(going){
+                    new ImageDownloader().execute(busLine.getComing());
+                    item.setTitle(R.string.flip_to_going);
+                }else{
+                    new ImageDownloader().execute(busLine.getGoing());
+                    item.setTitle(R.string.flip_to_coming);
+                }
+                return true;
+            }
+        });
+
         return true;
     }
 
@@ -61,10 +99,10 @@ public class ScheduleActivity extends Activity {
         super.onConfigurationChanged(newConfig);
     }
 
-    private class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
+    private class ImageDownloader extends AsyncTask<URI, Void, Bitmap> {
 
         @Override
-        protected Bitmap doInBackground(String... params) {
+        protected Bitmap doInBackground(URI... params) {
             // TODO Auto-generated method stub
             return downloadBitmap(params[0]);
         }
@@ -81,11 +119,11 @@ public class ScheduleActivity extends Activity {
 
             Drawable drawable = new BitmapDrawable(getResources(), result);
             scroll.setVisibility(View.VISIBLE);
+            scroll.scrollTo(0, 0);
             schedule.setImageDrawable(drawable);
-
         }
 
-        private Bitmap downloadBitmap(String url) {
+        private Bitmap downloadBitmap(URI url) {
             // initilize the default HTTP client object
             final DefaultHttpClient client = new DefaultHttpClient();
 

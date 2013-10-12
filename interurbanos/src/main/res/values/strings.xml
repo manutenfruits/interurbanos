@@ -10,5 +10,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="going">Ida</string>
     <string name="coming">Vuelta</string>
+    <string name="flip_to_going">Ver ida</string>
+    <string name="flip_to_coming">Ver vuelta</string>
 
 </resources>

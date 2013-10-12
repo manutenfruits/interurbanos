@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ArrayList<HashMap<String, String>> busLines = BusModel.getData();
+        ArrayList<BusLine> busLines = BusModel.getData();
 
         BusLinesAdapter adapter = new BusLinesAdapter(this, busLines);
 

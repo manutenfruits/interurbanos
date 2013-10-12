@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,20 +19,15 @@ public class BusModel {
 
     private final static  String BUSLINES_FILE = "buslines.json";
 
-    static final String KEY_GOING = "forward";
-    static final String KEY_COMING = "backward";
-    static final String KEY_LINE = "line";
-    static final String KEY_ORIGIN = "origin";
-    static final String KEY_DESTINATION = "destination";
+    private static final String KEY_GOING = "forward";
+    private static final String KEY_COMING = "backward";
+    private static final String KEY_LINE = "line";
+    private static final String KEY_ORIGIN = "origin";
+    private static final String KEY_DESTINATION = "destination";
 
-    static final String KEY_BUSTYPE = "bustype";
+    private static ArrayList<BusLine> busLines = null;
 
-    static final String REGULARBUS = "regularbus";
-    static final String NIGHTBUS = "nightbus";
-
-    private static ArrayList<HashMap<String, String>> busLines = null;
-
-    public static ArrayList<HashMap<String, String>> getData(){
+    public static ArrayList<BusLine> getData(){
         if(busLines == null){
             initList();
         }
@@ -64,7 +60,7 @@ public class BusModel {
 
     private static void initList(){
 
-        busLines = new ArrayList<HashMap<String, String>>();
+        busLines = new ArrayList<BusLine>();
 
         String fileContent = readData();
 
@@ -74,29 +70,29 @@ public class BusModel {
             for(int i = 0; i<json.length();i++){
                 JSONObject jsonChildNode = json.getJSONObject(i);
 
-                HashMap busLine = new HashMap<String, String>();
+                String going = jsonChildNode.optString(KEY_GOING);
+                String coming = jsonChildNode.optString(KEY_COMING);
+                String line = jsonChildNode.optString(KEY_LINE);
+                String origin = jsonChildNode.optString(KEY_ORIGIN);
+                String destination = jsonChildNode.optString(KEY_DESTINATION);
 
-                busLine.put(KEY_GOING, jsonChildNode.optString(KEY_GOING));
-                busLine.put(KEY_COMING, jsonChildNode.optString(KEY_COMING));
-                busLine.put(KEY_LINE, jsonChildNode.optString(KEY_LINE));
-                busLine.put(KEY_ORIGIN, jsonChildNode.optString(KEY_ORIGIN));
-                busLine.put(KEY_DESTINATION, jsonChildNode.optString(KEY_DESTINATION));
-                if(jsonChildNode.optString(KEY_LINE).charAt(0) == 'N')
-                    busLine.put(KEY_BUSTYPE, NIGHTBUS);
-                else
-                    busLine.put(KEY_BUSTYPE, REGULARBUS);
+                try{
+                    BusLine busLine = new BusLine(line, origin, destination, going, coming);
+                    busLines.add(busLine);
+                }catch(URISyntaxException e){
+                    e.printStackTrace();
+                }
 
-                busLines.add(busLine);
             }
         }
         catch(JSONException ex){
             ex.printStackTrace();
         }
 
-        Collections.sort(busLines, new Comparator<HashMap<String, String>>() {
+        Collections.sort(busLines, new Comparator<BusLine>() {
             @Override
-            public int compare(HashMap<String, String> lhs, HashMap<String, String> rhs) {
-                return (lhs.get(KEY_LINE).compareTo(rhs.get(KEY_LINE)));
+            public int compare(BusLine lhs, BusLine rhs) {
+                return (lhs.getLine().compareTo(rhs.getLine()));
             }
         });
     }

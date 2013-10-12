@@ -21,13 +21,13 @@ import java.util.HashMap;
 public class BusLinesAdapter extends BaseAdapter implements Filterable{
 
     private Activity activity;
-    private ArrayList<HashMap<String, String>> original;
-    private ArrayList<HashMap<String, String>> data;
+    private ArrayList<BusLine> original;
+    private ArrayList<BusLine> data;
     private static LayoutInflater inflater = null;
 
     private static int selected = -1;
 
-    public BusLinesAdapter(Activity a, ArrayList<HashMap<String,String>> d){
+    public BusLinesAdapter(Activity a, ArrayList<BusLine> d){
         this.activity = a;
         this.original = d;
         this.data = d;
@@ -42,7 +42,7 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
             vi = inflater.inflate(R.layout.bus_line, null);
         }
 
-        HashMap<String, String> busLine = data.get(position);
+        BusLine busLine = data.get(position);
 
 
         TextView busNumber = (TextView) vi.findViewById(R.id.bus_number);
@@ -54,14 +54,12 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
         LinearLayout busLabel = (LinearLayout) vi.findViewById(R.id.bus_label);
         LinearLayout busDescription = (LinearLayout) vi.findViewById(R.id.bus_description);
 
-        String line = busLine.get(BusModel.KEY_LINE);
+        String line = busLine.getLine();
         busNumber.setText(line);
-        busOrigin.setText(busLine.get(BusModel.KEY_ORIGIN));
-        busDestination.setText(busLine.get(BusModel.KEY_DESTINATION));
+        busOrigin.setText(busLine.getOrigin());
+        busDestination.setText(busLine.getDestination());
 
-        String busType = busLine.get(BusModel.KEY_BUSTYPE);
-
-        if(busType.equals(BusModel.NIGHTBUS)){
+        if(busLine.isNightBus()){
             busNumber.setTextColor(activity.getResources().getColor(R.color.nightbusfg));
             busNumber.setBackgroundColor(activity.getResources().getColor(R.color.nightbusbg));
         }else{
@@ -78,8 +76,8 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
         busDescription.setOnClickListener(new SelectClickListener(position, true));
         busLabel.setOnClickListener(new SelectClickListener(position, false));
 
-        busGoing.setOnClickListener(new GoingComingClickListener(position, BusModel.KEY_GOING));
-        busComing.setOnClickListener(new GoingComingClickListener(position, BusModel.KEY_COMING));
+        busGoing.setOnClickListener(new GoingComingClickListener(position, true));
+        busComing.setOnClickListener(new GoingComingClickListener(position, false));
 
         return vi;
     }
@@ -107,10 +105,10 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
                     results.values = original;
                     results.count = original.size();
                 }else{
-                    ArrayList<HashMap<String, String>> filtered = new ArrayList<HashMap<String, String>>();
+                    ArrayList<BusLine> filtered = new ArrayList<BusLine>();
 
-                    for(HashMap<String, String> data: original){
-                        if(data.get(BusModel.KEY_LINE).contains(constraint)){
+                    for(BusLine data: original){
+                        if(data.getLine().contains(constraint)){
                             filtered.add(data);
                         }
                     }
@@ -124,7 +122,7 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                data = (ArrayList<HashMap<String, String>>) results.values;
+                data = (ArrayList<BusLine>) results.values;
                 notifyDataSetChanged();
             }
         };
@@ -174,9 +172,9 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
     public class GoingComingClickListener implements View.OnClickListener {
 
         private int position;
-        private String going;
+        private boolean going;
 
-        public GoingComingClickListener(int position, String going) {
+        public GoingComingClickListener(int position, boolean going) {
             this.position = position;
             this.going = going;
         }
@@ -184,11 +182,12 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
         @Override
         public void onClick(View v) {
 
-            HashMap<String, String> item = data.get(this.position);
+            BusLine item = data.get(this.position);
 
             Intent intent = new Intent(v.getContext(), ScheduleActivity.class);
 
-            intent.putExtra(BusModel.KEY_LINE, item.get(this.going));
+            intent.putExtra(BusLine.KEY, item);
+            intent.putExtra(BusLine.DIRECTION, this.going);
 
             v.getContext().startActivity(intent);
         }
