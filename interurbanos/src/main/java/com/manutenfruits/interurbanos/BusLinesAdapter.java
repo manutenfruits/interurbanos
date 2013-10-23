@@ -106,10 +106,11 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
                     results.values = original;
                     results.count = original.size();
                 }else{
+                    String token = constraint.toString().toLowerCase();
                     ArrayList<BusLine> filtered = new ArrayList<BusLine>();
 
                     for(BusLine data: original){
-                        if(data.getLine().contains(constraint)){
+                        if(data.getLine().toLowerCase().contains(token)){
                             filtered.add(data);
                         }
                     }

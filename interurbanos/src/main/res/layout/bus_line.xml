@@ -26,6 +26,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/bus_description"
+        android:background="@android:color/white"
         android:visibility="visible"
         android:orientation="vertical"
         android:paddingLeft="6dip"
