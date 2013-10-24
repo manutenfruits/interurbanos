@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.manutenfruits.interurbanos.model.BusLine;
@@ -26,7 +27,7 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
     private ArrayList<BusLine> data;
     private static LayoutInflater inflater = null;
 
-    private static int selected = -1;
+    private static String selected = null;
 
     public BusLinesAdapter(Activity a, ArrayList<BusLine> d){
         this.activity = a;
@@ -68,7 +69,7 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
             busNumber.setBackgroundColor(activity.getResources().getColor(R.color.regularbusbg));
         }
 
-        if(selected == position){
+        if(selected == line){
             select(vi);
         }else{
             unselect(vi);
@@ -92,7 +93,6 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
         v.findViewById(R.id.bus_selector).setVisibility(View.GONE);
         v.findViewById(R.id.bus_description).setVisibility(View.VISIBLE);
     }
-
 
     @Override
     public Filter getFilter() {
@@ -143,29 +143,34 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
     public class SelectClickListener implements View.OnClickListener{
 
         private int position;
-        private boolean select;
+        private boolean reveal;
 
-        public SelectClickListener(int position, boolean select){
+        public SelectClickListener(int position, boolean reveal){
             this.position = position;
-            this.select = select;
+            this.reveal = reveal;
         }
 
         @Override
         public void onClick(View v) {
-            LinearLayout parent = (LinearLayout) (v.getParent());
+            View parent;
+            if(reveal){
+                parent = (View) v.getParent().getParent();
+            }else{
+                parent = (View) v.getParent();
+            }
 
-            if(this.select){
+            if(this.reveal){
                 select(parent);
 
-                if(selected >= 0){
+                if(selected != null){
                     notifyDataSetChanged();
                 }
-                selected = this.position;
+                selected = data.get(this.position).getLine();
             }else{
                 unselect(parent);
 
-                if(selected == this.position){
-                    selected = -1;
+                if(selected == data.get(this.position).getLine()){
+                    selected = null;
                 }
             }
         }

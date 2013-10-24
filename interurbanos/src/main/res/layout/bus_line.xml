@@ -24,83 +24,92 @@
 
     </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/bus_description"
-        android:background="@android:color/white"
-        android:visibility="visible"
-        android:orientation="vertical"
-        android:paddingLeft="6dip"
-        android:paddingRight="6dip"
-        android:layout_width="0dip"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="fill_parent"
+        android:layout_width="0dip"
         android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/bus_origin"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/bus_selector"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:background="@color/lightgreybg"
+            android:textColor="@color/darkgreyfg"
+            android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:ellipsize="end"
-            android:gravity="center_vertical" />
+            android:layout_height="fill_parent">
 
-        <TextView
-            android:id="@+id/bus_destination"
+            <TextView
+                android:id="@+id/bus_going"
+                android:text="@string/going"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:layout_height="fill_parent"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:textSize="22sp"
+                android:ellipsize="end"
+                android:gravity="center" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="#DBDBDB"/>
+
+            <TextView
+                android:id="@+id/bus_coming"
+                android:text="@string/coming"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:layout_height="fill_parent"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:textSize="22sp"
+                android:ellipsize="end"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/bus_description"
+            android:gravity="center"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="6dip"
+            android:paddingRight="6dip"
             android:layout_width="fill_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:ellipsize="end"
-            android:gravity="center_vertical" />
+            android:layout_height="fill_parent">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/bus_origin"
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:ellipsize="end"
+                android:gravity="center_vertical" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/bus_selector"
-        android:visibility="gone"
-        android:textColor="@color/darkgreyfg"
-        android:background="@color/lightgreybg"
-        android:orientation="horizontal"
-        android:layout_width="0dip"
-        android:layout_height="fill_parent"
-        android:layout_weight="1">
+            <TextView
+                android:id="@+id/bus_destination"
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:ellipsize="end"
+                android:gravity="center_vertical" />
 
-        <TextView
-            android:id="@+id/bus_going"
-            android:text="@string/going"
-            android:textAllCaps="true"
-            android:textStyle="bold"
-            android:layout_height="fill_parent"
-            android:layout_width="0dip"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:textSize="22sp"
-            android:ellipsize="end"
-            android:gravity="center" />
+        </LinearLayout>
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="fill_parent"
-            android:background="#DBDBDB"/>
-
-        <TextView
-            android:id="@+id/bus_coming"
-            android:text="@string/coming"
-            android:textAllCaps="true"
-            android:textStyle="bold"
-            android:layout_height="fill_parent"
-            android:layout_width="0dip"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:textSize="22sp"
-            android:ellipsize="end"
-            android:gravity="center" />
-
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </LinearLayout>
