@@ -12,5 +12,6 @@
     <string name="coming">Vuelta</string>
     <string name="flip_to_going">Ver ida</string>
     <string name="flip_to_coming">Ver vuelta</string>
+    <string name="schedule_retrieval_failed">La carga del horario ha fallado</string>
 
 </resources>

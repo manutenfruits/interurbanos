@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.manutenfruits.interurbanos.model.BusLine;
 import com.manutenfruits.interurbanos.model.BusModel;
@@ -34,6 +36,7 @@ public class ScheduleActivity extends Activity {
     private ScheduleView schedule;
     private View loading;
     private DiskLruImageCache dlic;
+    private LinearLayout textMsg;
 
     private BusLine busLine;
 
@@ -49,14 +52,14 @@ public class ScheduleActivity extends Activity {
         this.scroll = (ScrollView) findViewById(R.id.scrollSchedule);
         this.loading = findViewById(R.id.loadingSchedule);
         this.schedule = (ScheduleView) findViewById(R.id.scheduleView);
+        this.textMsg = (LinearLayout) findViewById(R.id.scheduleNotFound);
 
         this.busLine = getIntent().getParcelableExtra(BusLine.KEY);
         this.going = getIntent().getBooleanExtra(BusLine.DIRECTION, true);
 
         this.dlic = new DiskLruImageCache(this, BusModel.BUSLINES_CACHE, BusModel.DISK_CACHE_SIZE, Bitmap.CompressFormat.PNG, 100);
 
-        new ImageDownloader().execute(busLine);
-
+        new ScheduleRetriever().execute(busLine);
     }
 
     @Override
@@ -81,7 +84,7 @@ public class ScheduleActivity extends Activity {
                     item.setTitle(R.string.flip_to_going);
                 }
                 going = !going;
-                new ImageDownloader().execute(busLine);
+                new ScheduleRetriever().execute(busLine);
                 return true;
             }
         });
@@ -94,7 +97,19 @@ public class ScheduleActivity extends Activity {
         super.onConfigurationChanged(newConfig);
     }
 
-    private class ImageDownloader extends AsyncTask<BusLine, Void, Bitmap> {
+    private void DrawSchedule(Bitmap bitmap){
+
+        if(bitmap == null){
+            schedule.setVisibility(View.GONE);
+            textMsg.setVisibility(View.VISIBLE);
+        }else{
+            textMsg.setVisibility(View.GONE);
+            schedule.setVisibility(View.VISIBLE);
+            schedule.setImageBitmap(bitmap);
+        }
+    }
+
+    private class ScheduleRetriever extends AsyncTask<BusLine, Void, Bitmap> {
 
         private String key;
 
@@ -108,7 +123,10 @@ public class ScheduleActivity extends Activity {
             }else{
                 URI uri = going? busLine.getGoing(): busLine.getComing();
                 schedule = downloadBitmap(uri);
-                dlic.put(key, schedule);
+
+                if(schedule != null){
+                    dlic.put(key, schedule);
+                }
             }
 
             return schedule;
@@ -117,17 +135,16 @@ public class ScheduleActivity extends Activity {
         @Override
         protected void onPreExecute() {
             scroll.setVisibility(View.GONE);
+            textMsg.setVisibility(View.GONE);
             loading.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Bitmap result) {
             loading.setVisibility(View.GONE);
-
-            Drawable drawable = new BitmapDrawable(getResources(), result);
             scroll.setVisibility(View.VISIBLE);
             scroll.scrollTo(0, 0);
-            schedule.setImageDrawable(drawable);
+            DrawSchedule(result);
         }
 
         private Bitmap downloadBitmap(URI url) {
@@ -144,10 +161,9 @@ public class ScheduleActivity extends Activity {
                 final int statusCode = response.getStatusLine().getStatusCode();
 
                 if (statusCode != HttpStatus.SC_OK) {
-                    Log.w("ImageDownloader", "Error " + statusCode +
+                    Log.w("ScheduleRetriever", "Error " + statusCode +
                             " while retrieving bitmap from " + url);
                     return null;
-
                 }
 
                 final HttpEntity entity = response.getEntity();
@@ -171,7 +187,7 @@ public class ScheduleActivity extends Activity {
             } catch (Exception e) {
                 // You Could provide a more explicit error message for IOException
                 getRequest.abort();
-                Log.e("ImageDownloader", "Something went wrong while" +
+                Log.e("ScheduleRetriever", "Something went wrong while" +
                         " retrieving bitmap from " + url + e.toString());
             }
 
