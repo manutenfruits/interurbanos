@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.manutenfruits.interurbanos.model.BusLine;
+import com.manutenfruits.interurbanos.model.BusModel;
 
 import java.util.ArrayList;
 
@@ -69,6 +70,10 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
             busNumber.setBackgroundColor(activity.getResources().getColor(R.color.regularbusbg));
         }
 
+        if(BusModel.isFavorite(line)){
+            busNumber.setTextColor(activity.getResources().getColor(R.color.gold));
+        }
+
         if(selected == line){
             select(vi);
         }else{
@@ -110,7 +115,9 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
                     ArrayList<BusLine> filtered = new ArrayList<BusLine>();
 
                     for(BusLine data: original){
-                        if(data.getLine().toLowerCase().contains(token)){
+                        if(data.getLine().toLowerCase().contains(token) ||
+                                data.getOrigin().toLowerCase().contains(token) ||
+                                data.getDestination().toLowerCase().contains(token) ){
                             filtered.add(data);
                         }
                     }

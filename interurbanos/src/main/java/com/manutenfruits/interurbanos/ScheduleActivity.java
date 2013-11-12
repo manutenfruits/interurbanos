@@ -1,5 +1,7 @@
 package com.manutenfruits.interurbanos;
 
+import android.app.ActionBar;
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -9,9 +11,13 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -19,6 +25,7 @@ import android.widget.TextView;
 import com.manutenfruits.interurbanos.model.BusLine;
 import com.manutenfruits.interurbanos.model.BusModel;
 import com.manutenfruits.interurbanos.model.DiskLruImageCache;
+import com.manutenfruits.interurbanos.view.FavoriteMenuButton;
 import com.manutenfruits.interurbanos.view.ScheduleView;
 
 import org.apache.http.HttpEntity;
@@ -37,6 +44,7 @@ public class ScheduleActivity extends Activity {
     private View loading;
     private DiskLruImageCache dlic;
     private LinearLayout textMsg;
+    private FavoriteMenuButton favBtn;
 
     private BusLine busLine;
 
@@ -47,7 +55,18 @@ public class ScheduleActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.schedule);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+
+        LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        View customActionBar = LayoutInflater.from(this).inflate(R.layout.schedule_actionbar, null);
+
+        actionBar.setCustomView(customActionBar, lp);
+        actionBar.setDisplayShowCustomEnabled(true);
+
+        this.favBtn = (FavoriteMenuButton) customActionBar.findViewById(R.id.favoriteSchedule);
 
         this.scroll = (ScrollView) findViewById(R.id.scrollSchedule);
         this.loading = findViewById(R.id.loadingSchedule);
@@ -56,6 +75,18 @@ public class ScheduleActivity extends Activity {
 
         this.busLine = getIntent().getParcelableExtra(BusLine.KEY);
         this.going = getIntent().getBooleanExtra(BusLine.DIRECTION, true);
+
+        favBtn.setChecked(BusModel.isFavorite(busLine.getLine()));
+        favBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    BusModel.addFavorite(busLine.getLine());
+                }else{
+                    BusModel.removeFavorite(busLine.getLine());
+                }
+            }
+        });
 
         this.dlic = new DiskLruImageCache(this, BusModel.BUSLINES_CACHE, BusModel.DISK_CACHE_SIZE, Bitmap.CompressFormat.PNG, 100);
 

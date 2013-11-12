@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Adapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -20,7 +21,10 @@ public class MainActivity extends Activity implements SearchView.OnQueryTextList
 
     private TextView searchText;
     private SearchView searchView;
-    private BusLinesAdapter adapter;
+    private BusLinesAdapter busAdapter;
+    private BusLinesAdapter favAdapter;
+    private ListView busListView;
+    private ListView favListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +32,24 @@ public class MainActivity extends Activity implements SearchView.OnQueryTextList
         setContentView(R.layout.activity_main);
 
         ArrayList<BusLine> busLines = BusModel.getData();
+        ArrayList<BusLine> favLines = BusModel.getFavorites();
 
-        adapter = new BusLinesAdapter(this, busLines);
+        busAdapter = new BusLinesAdapter(this, busLines);
+        //favAdapter = new BusLinesAdapter(this, favLines);
 
-        final ListView listView = (ListView) findViewById(R.id.buslist);
+        busListView = (ListView) findViewById(R.id.buslist);
+        //favListView = (ListView) findViewById(R.id.favoriteslist);
 
-        listView.setAdapter(adapter);
+        busListView.setAdapter(busAdapter);
+        //favListView.setAdapter(favAdapter);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        busListView.invalidate();
+        //favListView.invalidate();
     }
 
     @Override
@@ -70,7 +85,7 @@ public class MainActivity extends Activity implements SearchView.OnQueryTextList
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        adapter.getFilter().filter(newText);
+        busAdapter.getFilter().filter(newText);
         return true;
     }
 }

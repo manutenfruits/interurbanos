@@ -3,6 +3,8 @@ package com.manutenfruits.interurbanos.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.manutenfruits.interurbanos.BusLinesAdapter;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -10,7 +12,7 @@ import java.net.URISyntaxException;
 
  * Created by manutenfruits on 12/10/13.
  */
-public class BusLine implements Parcelable{
+public class BusLine implements Comparable<String>, Parcelable{
 
     public static String KEY = "BUSLINE";
     public static String DIRECTION = "BUSDIRECTION";
@@ -54,6 +56,11 @@ public class BusLine implements Parcelable{
         dest.writeString(this.destination);
         dest.writeString(this.going.toString());
         dest.writeString(this.coming.toString());
+    }
+
+    @Override
+    public int compareTo(String another) {
+        return (this.getLine().compareTo(another));
     }
 
     public static final Parcelable.Creator CREATOR = new Creator<BusLine>() {
