@@ -8,24 +8,9 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:layout_alignParentTop="true"
-        android:fastScrollEnabled="true"
-        android:divider="@color/lightgreybg"
-        android:dividerHeight="1dp"
-        android:id="@+id/favoriteslist" />
-
-    <View
-        android:layout_height="5dp"
-        android:layout_width="match_parent"/>
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_below="@id/favoriteslist"
         android:fastScrollEnabled="true"
         android:divider="@color/lightgreybg"
         android:dividerHeight="1dp"

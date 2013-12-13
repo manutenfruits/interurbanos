@@ -21,10 +21,8 @@ public class MainActivity extends Activity implements SearchView.OnQueryTextList
 
     private TextView searchText;
     private SearchView searchView;
-    private BusLinesAdapter busAdapter;
-    private BusLinesAdapter favAdapter;
+    private SeparatedListAdapter busAdapter;
     private ListView busListView;
-    private ListView favListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +32,13 @@ public class MainActivity extends Activity implements SearchView.OnQueryTextList
         ArrayList<BusLine> busLines = BusModel.getData();
         ArrayList<BusLine> favLines = BusModel.getFavorites();
 
-        busAdapter = new BusLinesAdapter(this, busLines);
-        //favAdapter = new BusLinesAdapter(this, favLines);
+        busAdapter = new SeparatedListAdapter(this);
+        busAdapter.addSection("Favorites", new BusLinesAdapter(this, favLines));
+        busAdapter.addSection("All", new BusLinesAdapter(this, busLines));
 
         busListView = (ListView) findViewById(R.id.buslist);
-        //favListView = (ListView) findViewById(R.id.favoriteslist);
 
         busListView.setAdapter(busAdapter);
-        //favListView.setAdapter(favAdapter);
     }
 
     @Override
@@ -49,7 +46,13 @@ public class MainActivity extends Activity implements SearchView.OnQueryTextList
         super.onResume();
 
         busListView.invalidate();
-        //favListView.invalidate();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        busListView.invalidate();
     }
 
     @Override
@@ -85,7 +88,7 @@ public class MainActivity extends Activity implements SearchView.OnQueryTextList
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        busAdapter.getFilter().filter(newText);
+        //busAdapter.getFilter().filter(newText);
         return true;
     }
 }

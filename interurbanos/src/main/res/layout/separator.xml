@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/separator_title"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textAlignment="center"
+    android:gravity="center"
+    android:textAllCaps="true"
+    android:background="@color/lightgreybg"
+    android:textSize="22sp"
+    android:textStyle="bold"
+    android:text="Header"
+    android:paddingTop="4dip"
+    android:paddingBottom="4dip"/>
