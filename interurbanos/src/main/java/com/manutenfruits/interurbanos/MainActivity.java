@@ -45,14 +45,14 @@ public class MainActivity extends Activity implements SearchView.OnQueryTextList
     @Override
     protected void onResume() {
         favAdapter.setDataSet(BusModel.getFavorites());
-        busListView.invalidateViews();
+        mainAdapter.notifyDataSetChanged();
         super.onResume();
     }
 
     @Override
     protected void onRestart() {
         favAdapter.setDataSet(BusModel.getFavorites());
-        busListView.invalidateViews();
+        mainAdapter.notifyDataSetChanged();
         super.onRestart();
     }
 
