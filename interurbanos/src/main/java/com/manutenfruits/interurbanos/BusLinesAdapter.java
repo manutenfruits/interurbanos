@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -27,14 +28,20 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
     private ArrayList<BusLine> original;
     private ArrayList<BusLine> data;
     private static LayoutInflater inflater = null;
+    private SeparatedListAdapter parent;
 
-    private static String selected = null;
+    private int selected = -1;
 
-    public BusLinesAdapter(Activity a, ArrayList<BusLine> d){
+    public BusLinesAdapter(Activity a, ArrayList<BusLine> d, SeparatedListAdapter parent){
         this.activity = a;
         this.original = d;
         this.data = d;
+        this.parent = parent;
         this.inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public void setDataSet(ArrayList<BusLine> d){
+        this.data = d;
     }
 
     @Override
@@ -46,7 +53,6 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
         }
 
         BusLine busLine = data.get(position);
-
 
         TextView busNumber = (TextView) vi.findViewById(R.id.bus_number);
         TextView busOrigin = (TextView) vi.findViewById(R.id.bus_origin);
@@ -74,7 +80,7 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
             busNumber.setTextColor(activity.getResources().getColor(R.color.gold));
         }
 
-        if(selected == line){
+        if(selected == position){
             select(vi);
         }else{
             unselect(vi);
@@ -97,6 +103,10 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
     private void unselect(View v){
         v.findViewById(R.id.bus_selector).setVisibility(View.GONE);
         v.findViewById(R.id.bus_description).setVisibility(View.VISIBLE);
+    }
+
+    public void setSelected(int selected){
+        this.selected = selected;
     }
 
     @Override
@@ -132,7 +142,7 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 data = (ArrayList<BusLine>) results.values;
-                notifyDataSetChanged();
+                parent.clear();
             }
         };
     }
@@ -159,25 +169,23 @@ public class BusLinesAdapter extends BaseAdapter implements Filterable{
 
         @Override
         public void onClick(View v) {
-            View parent;
-            if(reveal){
-                parent = (View) v.getParent().getParent();
+            View parentView;
+            if(this.reveal){
+                parentView = (View) v.getParent().getParent();
             }else{
-                parent = (View) v.getParent();
+                parentView = (View) v.getParent();
             }
 
             if(this.reveal){
-                select(parent);
-
-                if(selected != null){
-                    notifyDataSetChanged();
-                }
-                selected = data.get(this.position).getLine();
+                int previous = selected;
+                parent.clear();
+                select(parentView);
+                selected = this.position;
             }else{
-                unselect(parent);
+                unselect(parentView);
 
-                if(selected == data.get(this.position).getLine()){
-                    selected = null;
+                if(selected == this.position){
+                    selected = -1;
                 }
             }
         }

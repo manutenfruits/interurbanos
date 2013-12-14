@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class SeparatedListAdapter extends BaseAdapter implements Filterable {
+public class SeparatedListAdapter extends BaseAdapter{
 
-    public final Map<String,Adapter> sections = new LinkedHashMap<String,Adapter>();
+    public final Map<String,BusLinesAdapter> sections = new LinkedHashMap<String,BusLinesAdapter>();
     public final ArrayAdapter<String> headers;
     public final static int TYPE_SECTION_HEADER = 0;
 
@@ -26,10 +26,20 @@ public class SeparatedListAdapter extends BaseAdapter implements Filterable {
         headers = new ArrayAdapter<String>(context, R.layout.separator);
     }
 
-    public void addSection(String section, Adapter adapter) {
+    public BusLinesAdapter addSection(String section, BusLinesAdapter adapter) {
         this.headers.add(section);
         this.sections.put(section, adapter);
+        return adapter;
     }
+
+    public void clear(){
+        for(Object section : this.sections.keySet()) {
+            sections.get(section).setSelected(-1);
+        }
+        notifyDataSetChanged();
+    }
+
+
 
     public Object getItem(int position) {
         for(Object section : this.sections.keySet()) {
@@ -116,5 +126,14 @@ public class SeparatedListAdapter extends BaseAdapter implements Filterable {
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public void filter(CharSequence constraint) {
+
+        for(Object section : sections.keySet()) {
+            BusLinesAdapter adapter = sections.get(section);
+            adapter.getFilter().filter(constraint);
+        }
+
     }
 }

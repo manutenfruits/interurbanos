@@ -19,10 +19,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends Activity implements SearchView.OnQueryTextListener{
 
-    private TextView searchText;
-    private SearchView searchView;
-    private SeparatedListAdapter busAdapter;
     private ListView busListView;
+
+    private SeparatedListAdapter mainAdapter;
+    private BusLinesAdapter favAdapter;
+    private BusLinesAdapter busAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,27 +33,27 @@ public class MainActivity extends Activity implements SearchView.OnQueryTextList
         ArrayList<BusLine> busLines = BusModel.getData();
         ArrayList<BusLine> favLines = BusModel.getFavorites();
 
-        busAdapter = new SeparatedListAdapter(this);
-        busAdapter.addSection("Favorites", new BusLinesAdapter(this, favLines));
-        busAdapter.addSection("All", new BusLinesAdapter(this, busLines));
+        mainAdapter = new SeparatedListAdapter(this);
+        favAdapter = mainAdapter.addSection("Favorites", new BusLinesAdapter(this, favLines, mainAdapter));
+        busAdapter = mainAdapter.addSection("All", new BusLinesAdapter(this, busLines, mainAdapter));
 
         busListView = (ListView) findViewById(R.id.buslist);
 
-        busListView.setAdapter(busAdapter);
+        busListView.setAdapter(mainAdapter);
     }
 
     @Override
     protected void onResume() {
+        favAdapter.setDataSet(BusModel.getFavorites());
+        busListView.invalidateViews();
         super.onResume();
-
-        busListView.invalidate();
     }
 
     @Override
     protected void onRestart() {
+        favAdapter.setDataSet(BusModel.getFavorites());
+        busListView.invalidateViews();
         super.onRestart();
-
-        busListView.invalidate();
     }
 
     @Override
@@ -88,7 +89,7 @@ public class MainActivity extends Activity implements SearchView.OnQueryTextList
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        //busAdapter.getFilter().filter(newText);
+        mainAdapter.filter(newText);
         return true;
     }
 }
